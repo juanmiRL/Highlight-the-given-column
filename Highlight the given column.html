@@ -41,7 +41,7 @@ body {
         }
         table{
          border: 1px solid rgb(133, 132, 132);
-         width: 30%;
+         width: 50%;
          background-color: rgb(250, 244, 244); 
         }
         td{
@@ -66,11 +66,42 @@ body {
         <br>
         <h2>Task 4:  Highlight the given column </h2>
         <hr style="color: blue;" ></hr>
-        
+        <br>
+        In this web page you can see the category-brands.csv, note that when you click on the row in the table below the bas in the graph is highlighted in a different color. Note also that the data is shown in decreasing order, only the 10 first elements are plotted. If you want to change the size of the table you can choose the number of rows in the input button.   
+        <br>
+        <br>
+
+
+
+        <table align="center"><thead></thead><tbody></tbody></table>
+
+        </table>     
         <script>
             
-             csv = false ? "data1.csv" : "https://raw.githubusercontent.com/juanmiRL/d3js-dynamic-HTML-Table-/main/data1.csv"
+             csv = false ? "data.csv" : "https://raw.githubusercontent.com/juanmiRL/Highlight-the-given-column/main/category_brands.csv";
              
+             d3.csv(csv,
+                    (d,i,c) => {
+                            cs = {
+                                "date":"Date",
+                                "name":"Name",
+                                "category" :"Category",
+                                "value" : "Value"
+                            }
+                            if (i==0){
+                                d3.select("table")
+                                .append("tr")
+                                .selectAll("th")
+                                .data(c)
+                                .join("th").text(e=>cs[e])
+                            }
+                            if (i>10) return d
+                d3.select("table")
+                .append("tr")
+                .selectAll("td")
+                .data(c).enter()
+                .append("td").text(e => d[e])
+            })
             
             	
         </script>

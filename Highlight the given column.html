@@ -119,6 +119,7 @@ body {
                 data = d
                 columns = d.columns
                 dates = Array.from(new Set(data.map(e => e.date)))
+                maxValue = d3.reduce(d,(p,v) => Math.max(p,v.value),0)
                 dataSelector(dates)
                 makeHeader(d)
                 updateTable(d)
@@ -138,6 +139,39 @@ body {
                 val = d3.select("select").node().value
                 filter_data = d3.filter(data, e => e.date == val)
                 updateTable(filter_data)
+                updateChart(filter_data)
+            }
+
+            function updateChart(data){
+                svg = d3.select("#myCanvas")
+                w = svg.node().width.baseVal.value;
+                h = svg.node().height.baseVal.value;
+                x = d3.scaleLinear([0, data.length], [0, w])
+                y = d3.scaleLinear([0, maxValue], [0,h])
+                cat = new Set(d3.map(data, d => d.category))
+                color = d3.scaleOrdinal(cat, d3.schemeTableau10)
+
+                svgBind = svg.text("")
+                    .selectAll("rect")
+                    .data(data)
+
+                svgBind.enter()
+                    .append('rect')
+                    .attr('x', (d , i) => x(i))
+                    .attr('y', d => y(maxValue - d.value))
+                    .attr('height', d => y(d.value))
+                    .attr('width', x(1)*0.95)
+                    .attr('fill', d => color(d.category))
+
+                svgBind.enter()
+                    .append("text")
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('transform', 
+                          (d , i) => 'translate(' + x(i+0.5) +
+                            ',' + y(maxValue - d.value - 5000)+'),' 
+                            + 'rotate(-90)')
+                    .text(d => d.name);
             }
         </script>
          

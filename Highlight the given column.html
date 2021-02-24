@@ -72,38 +72,52 @@ body {
         <br>
 
 
-
+        <div id="dateSelector"></div>
         <table align="center"><thead></thead><tbody></tbody></table>
 
-        </table>     
         <script>
             
              csv = false ? "data.csv" : "https://raw.githubusercontent.com/juanmiRL/Highlight-the-given-column/main/category_brands.csv";
-             
-             d3.csv(csv,
-                    (d,i,c) => {
-                            cs = {
+             const cs = {
                                 "date":"Date",
                                 "name":"Name",
                                 "category" :"Category",
                                 "value" : "Value"
                             }
-                            if (i==0){
-                                d3.select("table")
-                                .append("tr")
-                                .selectAll("th")
-                                .data(c)
-                                .join("th").text(e=>cs[e])
-                            }
-                            if (i>10) return d
-                d3.select("table")
-                .append("tr")
-                .selectAll("td")
-                .data(c).enter()
-                .append("td").text(e => d[e])
-            })
+             var data;
+
+             d3.csv(csv,
+                    (d,i,c) => {
+                        if (i>10) return d
+                        if (i==0){
+                            d3.select("table")
+                            .append("tr")
+                            .selectAll("th")
+                            .data(c)
+                            .join("th").text(e=>cs[e])
+                        }
+                        
+                        d3.select("table")
+                        .append("tr")
+                        .selectAll("td")
+                        .data(c).enter()
+                        .append("td").text(e => d[e])
+            }).then(tidying)
             
-            	
+            function tidying(d){
+                data = d
+                dates = Array.from(new Set(data.map(e => e.date)))
+                dataSelector(dates)
+            }
+            
+            function dataSelector(d){
+                d3.select("#dateSelector")
+                .append("select")
+                .selectAll("option")
+                .data(d).join("option")
+                .text(e => e)
+                .attr("value", e => e)
+            }
         </script>
          
        

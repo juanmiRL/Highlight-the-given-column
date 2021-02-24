@@ -56,9 +56,9 @@ body {
         tr:hover {background-color: #75b4fc;}
         
         #myCanvas{
-            background-color: cornflowerblue;
+            background-color: rgb(152, 186, 250);
         }
-}       
+               
       </style>
               <meta charset="utf-8">
     </head>
@@ -73,10 +73,8 @@ body {
         In this web page you can see the category-brands.csv, note that when you click on the row in the table below the bas in the graph is highlighted in a different color. Note also that the data is shown in decreasing order, only the 10 first elements are plotted. If you want to change the size of the table you can choose the number of rows in the input button.   
         <br>
         <br>
-
-
+        <div style="color:blue">Please introduce the number of brands:<input id="brands" type="number" size="3"> </input></div>
         <div id="dateSelector" style="color: blue;">Select Year:</div>
-        <div style="color:blue">Introduce the number of Brands:<input id="brands" type="number"> </input></div>
         <br>
         <br>
         <svg id="myCanvas" style="width:100%;height:350px;"> </svg>
@@ -129,7 +127,7 @@ body {
                 maxValue = d3.reduce(d,(p,v) => Math.max(p,v.value),0)
                 dataSelector(dates)
                 makeHeader(d)
-                updateTable(d)
+                updateTable(d).sort(d3.descending)
             }
             
             function dataSelector(d){
@@ -180,7 +178,14 @@ body {
                     .text(d => d.name);
             }
 
+            function highlight(d){
+                d3.select('#myCanvas')
+                .selectAll("tr")   
+                .data(csv)
+                .enter().append("tr")
+                .on("click", function(d) { attr('fill', 'red'); })
 
+            }
 
             
         

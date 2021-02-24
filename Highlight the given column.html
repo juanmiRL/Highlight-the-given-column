@@ -73,7 +73,10 @@ body {
 
 
         <div id="dateSelector"></div>
-        <table align="center"><thead></thead><tbody></tbody></table>
+        <table align="center">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
 
         <script>
             
@@ -85,38 +88,52 @@ body {
                                 "value" : "Value"
                             }
              var data;
+             var columns;
 
-             d3.csv(csv,
-                    (d,i,c) => {
-                        if (i>10) return d
-                        if (i==0){
-                            d3.select("table")
-                            .append("tr")
-                            .selectAll("th")
-                            .data(c)
-                            .join("th").text(e=>cs[e])
-                        }
-                        
-                        d3.select("table")
-                        .append("tr")
-                        .selectAll("td")
-                        .data(c).enter()
-                        .append("td").text(e => d[e])
-            }).then(tidying)
+             d3.csv(csv).then(tidying)
             
+            function updateTable(d) {
+                d3.select("table tbody")
+                    .selectAll("tr")
+                    .data(d)
+                    .join("tr")
+                    .selectAll("td")
+                    .data(e => columns.map(x => e[x]))
+                    .join("td")
+                        .text(x => x);
+            }
+
+            function makeHeader(d) {
+                d3.select("table thead").selectAll("tr").remove()
+                d3.select("table thead")
+                    .append("tr")
+                    .selectAll("th")
+                    .data(d.columns)
+                    .join("th").text(e => e)
+            }
             function tidying(d){
                 data = d
+                columns = d.columns
                 dates = Array.from(new Set(data.map(e => e.date)))
                 dataSelector(dates)
+                makeHeader(d)
+                updateTable(d)
             }
             
             function dataSelector(d){
                 d3.select("#dateSelector")
                 .append("select")
+                .on("change", d => updateSelect(d))
                 .selectAll("option")
                 .data(d).join("option")
-                .text(e => e)
+                .text(e => e.slice(0,4))
                 .attr("value", e => e)
+            }
+
+            function updateSelect(d){
+                val = d3.select("select").node().value
+                filter_data = d3.filter(data, e => e.date == val)
+                updateTable(filter_data)
             }
         </script>
          

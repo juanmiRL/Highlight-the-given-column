@@ -70,7 +70,9 @@ body {
         <h2>Task 4:  Highlight the given column </h2>
         <hr style="color: blue;" ></hr>
         <br>
-        In this web page you can see the category-brands.csv, note that when you click on the row in the table below the bas in the graph is highlighted in a different color. Note also that the data is shown in decreasing order, only the 10 first elements are plotted. If you want to change the size of the table you can choose the number of rows in the input button.   
+        In this web page you can see the category-brands.csv, note that when you click on the row in the table below the bas in the graph is highlighted in a different color. <br>
+        Note also that the data is shown in decreasing order. It is necessary that you choose a year among those available for the data to be displayed in the table and in the graphs, as well as the number of brands to be displayed.
+        <br> 
         <br>
         <br>
         <div style="color:blue">Please introduce the number of brands:<input id="brands" type="number" size="3"> </input></div>
@@ -128,6 +130,7 @@ body {
                 dataSelector(dates)
                 makeHeader(d)
                 updateTable(d).sort(d3.descending)
+                highlight(d)
             }
             
             function dataSelector(d){
@@ -165,7 +168,7 @@ body {
                     .attr('y', d => y(maxValue - d.value))
                     .attr('height', d => y(d.value))
                     .attr('width', x(1)*0.80)
-                    .attr('fill', "purple")
+                    .attr('fill', "darkblue")
 
                 svgBind.enter()
                     .append("text")
@@ -179,11 +182,10 @@ body {
             }
 
             function highlight(d){
-                d3.select('#myCanvas')
-                .selectAll("tr")   
-                .data(csv)
-                .enter().append("tr")
-                .on("click", function(d) { attr('fill', 'red'); })
+                d3.select("table tbody")
+                    .selectAll("tr")
+                    .on("click", function(d) {svgBind.attr('fill', 'red'); })   
+                
 
             }
 
